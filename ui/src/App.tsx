@@ -16,7 +16,7 @@ export function App() {
           </h1>
           
           <p className="text-muted-foreground max-w-4xl mx-auto text-xl">
-            Obtenha feedback de suas redações do ENEM. Preencha o tema da redação, anexe uma imagem da redação ou insira o seu conteúdo e selecione o modelo para avaliação.
+            Obtenha feedback de suas redações do ENEM. Preencha o tema da redação, insira o seu conteúdo e selecione o modelo para avaliação.
           </p>
         </div>
 
