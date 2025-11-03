@@ -1,0 +1,17 @@
+# Sistema
+.DS_Store
+__pycache__/
+*.pyc
+
+# Arquivos grandes derivados
+base_de_dados/DADOS_UNIFICADOS_original_flat_full.json
+base_de_dados/DADOS_UNIFICADOS_original_preservado.json
+base_de_dados/DADOS_UNIFICADOS_original_flat_sample.json
+base_de_dados/DADOS_UNIFICADOS_original_flat_full.ndjson
+
+# Se quiser manter apenas fonte principal e gerar saída local
+#!base_de_dados/DADOS_UNIFICADOS.json
+
+# Ambientes
+venv/
+.env

@@ -55,8 +55,8 @@ def process_in_place(obj: Any, normalize_spaces: bool, counter: dict, progress_e
 
 def main():
     ap = argparse.ArgumentParser(description='Adiciona texto_original_recuperado preservando estrutura.')
-    ap.add_argument('-i', '--input', default='DADOS_UNIFICADOS.json')
-    ap.add_argument('-o', '--output', default='DADOS_UNIFICADOS_original_preservado.json')
+    ap.add_argument('-i', '--input', default='base_de_dados/DADOS_UNIFICADOS.json')
+    ap.add_argument('-o', '--output', default='base_de_dados/DADOS_UNIFICADOS_original_preservado.json')
     ap.add_argument('--no-normalize', action='store_true', help='Não normaliza espaços internos.')
     ap.add_argument('--progress-every', type=int, default=1000, help='Loga progresso a cada K ocorrências.')
     args = ap.parse_args()
