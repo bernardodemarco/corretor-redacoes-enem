@@ -7,6 +7,7 @@ import { Label } from './label';
 import { Card } from './card';
 import { Upload } from 'lucide-react';
 import { LoadingOverlay } from './loading-overlay';
+import { evaluateEssay } from '../services/llms/llms'
 
 export function EssayForm() {
   const [essayTopic, setEssayTopic] = useState('');
@@ -23,8 +24,7 @@ export function EssayForm() {
       model: selectedModel
     })
     try {
-      await new Promise(resolve => setTimeout(resolve, 3000))
-      console.log('Essay was successfully evaluated!!!')
+      await evaluateEssay(essayTopic, essayContent, selectedModel)
     } finally {
       setIsLoading(false)
     }
@@ -78,7 +78,7 @@ export function EssayForm() {
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
                 <SelectItem value="gemini">Gemini Pro (Google)</SelectItem>
-                <SelectItem value="deep-seek">DeepSeek</SelectItem>
+                <SelectItem value="chatgpt">ChatGPT</SelectItem>
                 <SelectItem value="maritaca">Maritaca AI</SelectItem>
               </SelectContent>
             </Select>
