@@ -7,7 +7,7 @@ import { Label } from './label';
 import { Card } from './card';
 import { Upload } from 'lucide-react';
 import { LoadingOverlay } from './loading-overlay';
-import { evaluateEssay } from '../services/llms/llms'
+import { evaluateEssay } from '../services/llms'
 import { EssayFeedback, type Competency } from './essay-feedback';
 
 export function EssayForm() {
@@ -33,14 +33,6 @@ export function EssayForm() {
       setShowFeedback(true)
     }
   }
-
-  // const sample = [
-  //   { name: 'Competência 1', score: 160, feedback: 'Bom desenvolvimento do tema.', cot: 'O modelo analisou os argumentos apresentados e concluiu que...' },
-  //   { name: 'Competência 2', score: 140, feedback: 'Argumentação clara, mas com poucos exemplos.', cot: 'O modelo analisou os argumentos apresentados e concluiu que...' },
-  //   { name: 'Competência 3', score: 120, feedback: 'Coesão razoável, revisar conectivos.', cot: 'O modelo analisou os argumentos apresentados e concluiu que...' },
-  //   { name: 'Competência 4', score: 180, feedback: 'Vocabulário rico e adequado.', cot: 'O modelo analisou os argumentos apresentados e concluiu que...' },
-  //   { name: 'Competência 5', score: 150, feedback: 'Conclusão presente, poderia ser mais aprofundada. Conclusão presente, poderia ser mais aprofundada. Conclusão presente, poderia ser mais aprofundada. Conclusão presente, poderia ser mais aprofundada. Conclusão presente, poderia ser mais aprofundada. Conclusão presente, poderia ser mais aprofundada.', cot: 'O modelo analisou os argumentos apresentados e concluiu que...' },
-  // ];
 
   return (
     <>
@@ -91,7 +83,7 @@ export function EssayForm() {
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
                     <SelectItem value="gemini">Gemini Pro (Google)</SelectItem>
-                    <SelectItem value="chatgpt">ChatGPT</SelectItem>
+                    <SelectItem value="gpt-oss">ChatGPT</SelectItem>
                     <SelectItem value="maritaca">Maritaca AI</SelectItem>
                   </SelectContent>
                 </Select>
