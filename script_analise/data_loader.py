@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 import random
+import sys
 
 class DataLoader:
     def __init__(self, json_path):
@@ -42,16 +43,42 @@ class DataLoader:
         
         # Filtra redações que possuem a correção que queremos (Humana)
         candidatos = []
+        brasil_escola_map = {
+            "0-500": [],
+            "501-800": [],
+            "801-1000": []
+        }
+        educacao_uol_map = {
+            "0-500": [],
+            "501-800": [],
+            "801-1000": []
+        }
         for redacao in self.data:
             if not isinstance(redacao, dict):
                 # print(f"Aviso: Item 'redacao' não é um dicionário. Pulando. Conteúdo: {redacao}")
                 continue
-                
+            
+            if not redacao.get('url'):
+                continue
+
             for correcao in redacao.get('correcoes', []):
                 if isinstance(correcao, dict) and correcao.get('tipo') == tipo_correcao:
                     # Adiciona uma checagem para garantir que os detalhes existem
-                    if correcao.get('detalhes_competencias') and len(correcao.get('detalhes_competencias')) == 5:
-                        candidatos.append((redacao, correcao))
+                    if correcao.get('detalhes_competencias') and len(correcao.get('detalhes_competencias')) == 5 and correcao.get('nota_final'):
+                        nota_final = correcao.get('nota_final')
+                        fonte = redacao.get('url')
+                        candidatos_map = brasil_escola_map
+                        if 'educacao.uol' not in fonte:
+                            candidatos_map = educacao_uol_map
+
+                        if nota_final > 800:
+                            candidatos_map.get('801-1000').append((redacao, correcao))
+                        elif nota_final > 500:
+                            candidatos_map.get('501-800').append((redacao, correcao))
+                        else:
+                            candidatos_map.get('0-500').append((redacao, correcao))
+
+                        candidatos.append((redacao, correcao))                        
                         break # Pega a primeira correção 'Tradicional' que encontrar
         
         if not candidatos:
@@ -62,8 +89,16 @@ class DataLoader:
             print(f"Aviso: Pediu {n} amostras, mas só {len(candidatos)} encontradas com correção '{tipo_correcao}' e 5 competências.")
             n = len(candidatos)
             
-        amostra_aleatoria = random.sample(candidatos, n)
+        cardinalidade_por_fonte_e_faixa = n // (2 * 3)
+        amostra_aleatoria = []
+        for key in brasil_escola_map:
+            amostra_aleatoria += random.sample(brasil_escola_map[key], cardinalidade_por_fonte_e_faixa)
+            print(f'DEBUG - fetched {cardinalidade_por_fonte_e_faixa} from range {key} from brasil_escola_map')
+        for key in educacao_uol_map:
+            amostra_aleatoria += random.sample(educacao_uol_map[key], cardinalidade_por_fonte_e_faixa)
+            print(f'DEBUG - fetched {cardinalidade_por_fonte_e_faixa} from range {key} from educacao_uol_map')
         
+        print(f'DEBUG - amostra_final = {amostra_aleatoria}')
         # Prepara os dados de entrada e o ground truth
         amostra_final = []
         for redacao, correcao in amostra_aleatoria:
@@ -114,10 +149,14 @@ if __name__ == "__main__":
     loader = DataLoader('base_dados.json') 
     
     # Pega 1 redação de amostra
-    amostra = loader.get_sample(n=1)
-    
-    if amostra:
-        print("\n--- Exemplo de Amostra Corrigida ---")
-        print(json.dumps(amostra[0], indent=2, ensure_ascii=False))
-    else:
-        print("\nNenhuma amostra válida foi retornada.")
+    amostra = loader.get_sample(n=18)
+    if not amostra:
+        print('Nenhuma amostra válida encontrada')
+        sys.exit()
+
+    print("\n--- Exemplo de Amostra Corrigida ---")
+    print(json.dumps(amostra[0], indent=2, ensure_ascii=False))
+
+    print(f'DEBUG - verificando se as amostras foram coletadas respeitando as fontes e faixas de notas')
+    for redacao in amostra:
+        print(f'FONTE = {redacao.get('input').get('id')} & NOTA FINAL = {redacao.get('ground_truth').get('nota_final')}')
