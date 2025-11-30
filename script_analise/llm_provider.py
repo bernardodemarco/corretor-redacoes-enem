@@ -32,7 +32,7 @@ class GeminiProvider(AbstractLLMProvider):
     Implementação concreta para a API do Google Gemini.
     Utiliza o modo JSON para garantir a saída estruturada.
     """
-    def __init__(self, model_name="gemini-2.5-flash-preview-09-2025"):
+    def __init__(self, model_name="gemini-2.5-pro"):
         super().__init__(model_name)
         
         # Configura a API key

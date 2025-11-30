@@ -11,7 +11,7 @@ import time
 # Ajuste o nome do seu arquivo JSON principal aqui
 NOME_ARQUIVO_DB = "base_dados.json"
 # Quantas redações aleatórias você quer testar neste lote?
-N_AMOSTRAS_TESTE = 30
+N_AMOSTRAS_TESTE = 18
 # Arquivo de saída para os resultados
 ARQUIVO_SAIDA_CSV = "evaluation_results.csv"
 # Delay entre chamadas de API (em segundos) para evitar "Rate Limiting"
