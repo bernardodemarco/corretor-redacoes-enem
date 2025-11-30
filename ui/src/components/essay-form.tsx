@@ -83,7 +83,6 @@ export function EssayForm() {
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
                     <SelectItem value="gemini">Gemini Pro (Google)</SelectItem>
-                    <SelectItem value="gpt-oss">ChatGPT</SelectItem>
                     <SelectItem value="maritaca">Maritaca AI</SelectItem>
                   </SelectContent>
                 </Select>
