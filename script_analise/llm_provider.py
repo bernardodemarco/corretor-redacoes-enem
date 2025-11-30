@@ -114,40 +114,51 @@ class GeminiProvider(AbstractLLMProvider):
                  print(f"   Feedback do Prompt (possível bloqueio): {response.prompt_feedback}")
             return None
 
-class OpenAIProvider(AbstractLLMProvider):
+class MaritacaProvider(AbstractLLMProvider):
     """
-    Implementação concreta para a API da OpenAI (GPT).
+    Implementação concreta para a API do Maritaca AI.
     """
-    def __init__(self, model_name="gpt-4o-mini"): # gpt-4o-mini é rápido e barato
+    def __init__(self, model_name="sabia-3.1"):
         super().__init__(model_name)
-        api_key = os.getenv("OPENAI_API_KEY")
+        api_key = os.getenv("MARITACA_API_KEY")
         if not api_key:
-            raise ValueError("OPENAI_API_KEY não encontrada no arquivo .env")
-        # Inicializa o cliente da OpenAI
-        self.client = OpenAI(api_key=api_key)
+            raise ValueError("MARITACA_API_KEY não encontrada no arquivo .env")
+        self.client = OpenAI(api_key=api_key, base_url="https://chat.maritaca.ai/api")
+        self.json_schema = {
+            "type": "object",
+            "schema": {
+                "properties": {
+                    "nota_atribuida": {"type": "number"},
+                    "raciocinio_cot": {"type": "string"},
+                    "justificativa_para_aluno": {"type": "string"}
+                },
+                "required": ["nota_atribuida", "raciocinio_cot", "justificativa_para_aluno"]
+            }
+        }
 
     def get_correction(self, system_prompt, redacao_texto):
         """
-        Chama a API da OpenAI com o prompt do sistema e a redação,
+        Chama a API do Maritaca com o prompt do sistema e a redação,
         forçando a resposta em JSON.
         """
         try:
+            print('sending request to Maritaca')
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": redacao_texto}
                 ],
-                # Esta é a "mágica" para forçar JSON no GPT
-                response_format={"type": "json_object"},
+                response_format={"type": "json_schema", "json_schema": self.json_schema},
                 temperature=0.2 # Baixa temperatura para consistência
             )
             
             if not response.choices:
-                 raise Exception("Resposta da API da OpenAI vazia.")
+                 raise Exception("Resposta da API do Maritaca vazia.")
 
             # O JSON string está dentro da mensagem de resposta
             json_string = response.choices[0].message.content
+            print(f'received the following json_string as output: {json_string}')
             
             # Parseia o JSON string para um dicionário Python
             json_data = json.loads(json_string)
@@ -159,7 +170,7 @@ class OpenAIProvider(AbstractLLMProvider):
             return json_data
 
         except Exception as e:
-            print(f"[OpenAIProvider ERRO] Falha ao chamar API ou parsear JSON: {e}")
+            print(f"[MaritacaProvider ERRO] Falha ao chamar API ou parsear JSON: {e}")
             print(f"   Contexto: Modelo={self.model_name}")
             # Se a resposta não for JSON, pode estar aqui
             if 'response' in locals() and hasattr(response, 'choices'):
