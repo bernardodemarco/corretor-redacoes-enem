@@ -149,7 +149,7 @@ if __name__ == "__main__":
     loader = DataLoader('base_dados.json') 
     
     # Pega 1 redação de amostra
-    amostra = loader.get_sample(n=18)
+    amostra = loader.get_sample(n=30)
     if not amostra:
         print('Nenhuma amostra válida encontrada')
         sys.exit()

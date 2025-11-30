@@ -1,6 +1,6 @@
 # coding: utf-8
 from data_loader import DataLoader
-from llm_provider import GeminiProvider, OpenAIProvider # Importamos os provedores
+from llm_provider import GeminiProvider, MaritacaProvider # Importamos os provedores
 import metrics # Importamos nosso novo módulo de métricas
 import json
 import os
@@ -11,11 +11,11 @@ import time
 # Ajuste o nome do seu arquivo JSON principal aqui
 NOME_ARQUIVO_DB = "base_dados.json"
 # Quantas redações aleatórias você quer testar neste lote?
-N_AMOSTRAS_TESTE = 5 
+N_AMOSTRAS_TESTE = 30
 # Arquivo de saída para os resultados
 ARQUIVO_SAIDA_CSV = "evaluation_results.csv"
 # Delay entre chamadas de API (em segundos) para evitar "Rate Limiting"
-DELAY_ENTRE_CHAMADAS_API = 1.0 
+DELAY_ENTRE_CHAMADAS_API = 5 
 
 def carregar_prompt(nome_arquivo):
     """Lê um arquivo de prompt da pasta /prompts."""
@@ -49,7 +49,7 @@ def run_evaluation_batch(n_samples, output_csv):
     # --- 2. Inicializar Modelos ---
     modelos_para_testar = [
         GeminiProvider(),
-        OpenAIProvider()
+        MaritacaProvider()
     ]
 
     # --- 3. Loop de Execução ---
@@ -93,6 +93,7 @@ def run_evaluation_batch(n_samples, output_csv):
                 
                 # Adiciona delay para não bater o limite da API
                 time.sleep(DELAY_ENTRE_CHAMADAS_API)
+                print(f'DEBUG - dormindo por {DELAY_ENTRE_CHAMADAS_API} segundos')
 
                 # 3b. Chamar a API
                 resultado_json = modelo.get_correction(prompt_texto, input_data['texto'])

@@ -94,6 +94,7 @@ class GeminiProvider(AbstractLLMProvider):
             
             # response.text já é o JSON string
             json_string = response.text
+            print(f'DEBUG - received the following response from gemini {json_string}')
             
             # Parseia o JSON string para um dicionário Python
             json_data = json.loads(json_string)
